@@ -1,0 +1,7 @@
+.comp-toolbar {
+    padding:0 0 16px 0;
+}
+.comp-toolbar > ul >li{
+    float: right;
+    margin-left: 16px;
+}

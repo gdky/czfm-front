@@ -1,0 +1,19 @@
+.msg-detail .c1-2,
+.msg-detail .c1-1{
+    text-align: left;
+}
+.msg-detail .c1 {
+    padding-bottom: 8px;
+    border-bottom: #e9e9e9 1px solid;
+}
+.msg-detail .ct{
+    height:450px;
+    overflow-y: scroll;
+}
+.msg-detail .load-fail{
+    padding: 32px;
+    text-align: center;
+}
+.msg-detail .c2{
+    padding-top:16px;
+}

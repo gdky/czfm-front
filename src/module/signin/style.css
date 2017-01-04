@@ -1,0 +1,97 @@
+.sign-in{
+    position: relative;
+    width:100%;
+    height:auto;
+    min-height:100%;
+    padding-top:130px;
+    background:rgba(0, 0, 0, 0) url("../../common/img/signin-bg.jpg") repeat scroll 0 0
+}
+.sign-in:before{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+    display: block;
+    width: inherit;
+    /*background-color: #ffffff;*/
+    border: inherit;
+    content: "";
+}
+.sign-in .login-form{
+    width:312px;
+
+    margin-left: auto;
+    margin-right:auto;
+}
+.sign-in h2{
+    text-align: center;
+    margin-bottom: 24px
+}
+.sign-in h3 {
+    text-align: center;
+    margin-bottom: 48px;
+}
+.sign-in .ant-input {
+    height:48px;
+    padding:6px 24px;
+}
+.sign-in .ant-form-item{
+    margin-bottom: 4px;
+    font-size:14px;
+}
+.sign-in button{
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    border-radius: 2px;
+    width:312px;
+    background-color:#18791B;
+    border-color:#39A30E;
+}
+.sign-in button:hover{
+    background-color:#39A30E;
+    border-color:#39A30E;
+}
+.sign-in .feedback{
+    width: 312px;
+    margin-top:32px;
+    margin-right: auto;
+    margin-left:auto;
+}
+.sign-in .submit{
+    margin-top:32px
+}
+.sign-in .header{
+    position: absolute;
+    top:0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8) none repeat scroll 0 0;
+    height: 56px;
+}
+.sign-in .footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #1c262e none repeat scroll 0 0;
+    height: 100px;
+    text-align: center;
+}
+.sign-in .copyright{
+    margin-top: 24px;
+    color: #ccc;
+    font-size: 14px;
+}
+.sign-in  .logo{
+    position: absolute;
+    left:100px;
+    top:16px;
+}
+.sign-in  .logo i{
+    color:#00A9EB;
+    font-size: 24px;
+}
+.sign-in h1{
+    font-size: 0;
+    background: url("../../common/img/sign-in-header-logo.png") 30px 4px no-repeat;
+    width:300px;
+}
