@@ -1,132 +1,159 @@
 import React from 'react'
-import {Button, Icon, Alert} from 'antd'
-import Toolbar from 'component/toolbar'
-import List from './list'
+import { Button, Icon, Alert, Col, Row, Form, notification } from 'antd'
 import Detail from 'component/msgDetail'
-import model from './model'
-import NewMsg from './newMsg'
+import config from 'common/configuration'
 import req from 'common/request'
-import {jsonCopy} from 'common/utils'
+import LmMenu from '../menu.jsx'
+import Toolbar from './compToolbar'
+import MenuEdit from './menuEdit'
+import Panel from 'component/compPanel'
+import { jsonCopy, isEmptyObject } from 'common/utils'
 import cloneDeep from 'lodash/cloneDeep';
 import './style.css'
 
 
 const c = React.createClass({
-    getInitialState(){
+    getDefaultProps() {
         return {
-            listState: {},
-            entity: {},
-            helper: false,
-            query: false,
-            view:'list',
-            detail:false
+            //接收的json数据中用来充当key的字段名
+            keyCol: 'id',
+            //数据来源api
+            apiUrl: config.URI_API_PROJECT + `/wzglmenu`,
+            //初始搜索条件
+            defaultWhere: {},
+            //栏目名称
+            title: '栏目管理'
         }
     },
+    getInitialState() {
+        return {
+            nodes: '', currentNode: '', alert: ''
+        }
+    },
+    fetchData() {
+        const {apiUrl} = this.props;
+        req({
+            url: apiUrl,
+            method: 'get',
+        }).then(resp => {
+            this.setState({ nodes: resp });
+        }).catch(e => {
+            notification.error({
+                duration: 2,
+                message: '数据读取失败',
+                description: '网络访问故障，请尝试刷新页面'
+            });
+        })
+    },
+    componentDidMount() {
+        if (isEmptyObject(this.props.stateShot)) {
+            this.fetchData();
 
-     //抓取当前list分页状态
-    grabListState(state){
-        this.setState({listState: state})
+        } else {
+            this.setState({ ...this.props.stateShot })
+        }
     },
-    //刷新列表
-    refreshList(){
-        this.refs.list.refreshCurrent()
-    },
-    //返回list视图
-    async backToList(){
-        await this.setState({view: 'list'});
-        await this.refreshList()
-    },
-    //打开详情信息视图
-    openDetail(record){
-        this.setState({detail: true, entity: record})
-    },
-    //关闭详情视图
-    closeDetail(){
-        this.setState({detail:false})
-    },
-    helperToggle(){
-        this.setState({helper: !this.state.helper})
-    },
-    helperClose(){
-        this.setState({helper: false})
-    },
+    handleClick(e) {
+        let currentNode = ''
+        let key = e.key;
+        if (key.length > 0) {
+            currentNode = this.state.nodes[key];
+            currentNode.key = key;
+        }
 
-    newMsg(){
-        this.setState({view:'newMsg'})
+        this.setState({
+            currentNode: currentNode,
+            alert: ''
+        })
     },
-
-    /*计算column里定义的width总和，没有定义width的列宽按100(px)计算*/
-    getColWidth(model){
-        let w = 0;
-        model.columns.map(item => {
-            w = item.width ? w + item.width : w + 100;
+    addNode() {
+        const {apiUrl} = this.props;
+        let pid = 0;
+        if (this.state.currentNode) {
+            pid = this.state.currentNode.id;
+        }
+        let newNode = { pid: pid, mc: '新模块' };
+        req({
+            url: apiUrl,
+            method: 'post',
+            data: newNode
+        }).then(resp => {
+            ({ id: newNode.id } = resp);
+            let tmpArr = this.state.nodes.slice(0);
+            tmpArr.push(newNode);
+            this.setState({ nodes: tmpArr })
+        }).catch(e => {
+            notification.error({
+                duration: 2,
+                message: '数据读取失败',
+                description: '网络访问故障，请尝试刷新页面'
+            });
+        })
+    },
+    removeNode() {
+        const {apiUrl} = this.props;
+        req({
+            url: apiUrl + '/' + this.state.currentNode.id,
+            method: 'delete'
+        }).then((resp) => {
+            this.setState({ nodes: resp });
+        }).catch(e => {
+            notification.error({
+                duration: 2,
+                message: '数据读取失败',
+                description: '网络访问故障，请尝试刷新页面'
+            });
         });
-        return w;
     },
+    handleSubmit(value) {
+        const {apiUrl} = this.props;
+        let submitNode = value;
+        ({ id: submitNode.id, pid: submitNode.pid } = this.state.currentNode);//解构赋值
+        submitNode.visble = value.visble ? 1 : 0;
+        req({
+            url: apiUrl + '/' + submitNode.id,
+            method: 'put',
+            data: submitNode
+        }).then(resp => {
+            let tmpArr = this.state.nodes.slice(0);
+            tmpArr[this.state.currentNode.key] = submitNode;
+            this.setState({ alert: '修改成功', nodes: tmpArr,currentNode:submitNode })
+        }).catch(e => {
+            notification.error({
+                duration: 2,
+                message: '数据读取失败',
+                description: '网络访问故障，请尝试刷新页面'
+            });
+        })
+    },
+    render() {
 
-    render(){
-        //重新复制一个model对象，使修改不会影响原model对象，避免每次组件渲染时给原model对象累积赋值
-        const m = cloneDeep(model);
-        const actColWidth = 100;
-
-        m.setfunc(this.openDetail);
-
-
-        /*设置列表组件的参数 */
-        const listSetting = {
-            //列表可滚动区间的宽度，一般使用getcolwidth计算即可
-            scrollx: this.getColWidth(model) - actColWidth,
-            //列表需使用的columns定义
-            columns: m.columns,
-            //记录list组件被切换时状态值的方法
-            grabState: this.grabListState,
-            //list组件重新挂载时恢复状态用的历史状态数据
-            stateShot: this.state.listState
-        };
-        /* 设置新建信息组件参数*/
-        const newMsgSetting = {
-            onBack:this.backToList
-        };
-        /*设置明细信息组件的参数*/
-        const detailSetting = {
-            //设置数据源
-            id: this.state.entity.id,
-            visible:this.state.detail,
-            //设置返回主视图调用的方法
-            onClose: this.closeDetail
-        };
-
-        const view = {
-            list:<List {...listSetting} ref="list"/>,
-            newMsg:<NewMsg {...newMsgSetting} />
-        };
-
-
-        return <div className="zndx">
+        return <div className="mksz">
             <div className="wrap">
-                <Toolbar>
-                    <Button type="primary" onClick={this.newMsg}><Icon type="message"/>新信息</Button>
-                    <Button onClick={this.helperToggle}><Icon type="question"/>帮助</Button>
-                </Toolbar>
+                <Panel >
+                    <Row>
+                        <Col span="6" className="tree-box">
+                            <Row>
+                                <Toolbar addNode={this.addNode} removeNode={this.removeNode} />
+                                <LmMenu data={this.state.nodes} onClick={this.handleClick} ref="Menu" />
+                            </Row>
+                        </Col>
+                        <Col span="18" className="tree-node-edit">
+                            <Row><Col><MenuEdit data={this.state.currentNode} onSubmit={this.handleSubmit} ref="menuEdit" /></Col>
+                            </Row>
+                            {this.state.alert ?
+                                <Row><Col><Alert message={this.state.alert} type="success" showIcon /></Col></Row> : ''}
 
-                {this.state.helper && <Alert message="站内短信使用帮助"
-                                             description={<div>
-                                                 <p>本功能用以向站内用户群发或点对点发送短消息提醒</p>
-                                                 <p>点击“新信息”开始创建一条新的站内短信</p>
-                                             </div>}
-                                             type="info"
-                                             closable
-                                             onClose={this.helperClose}/>}
+
+                        </Col>
+                    </Row>
 
 
-
-                <Detail {...detailSetting}/>
-                {view[this.state.view]}
-
+                </Panel>
 
             </div>
         </div>
     }
-});
 
+});
 module.exports = c;
