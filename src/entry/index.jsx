@@ -59,7 +59,8 @@ const Index = React.createClass({
 
                 //文章管理
                 require('../module/wzgl/lmgl'),
-
+                require('../module/wzgl/wzfb'),
+                
                 //公用功能
                 //修改密码
                 require('../module/updatepass')

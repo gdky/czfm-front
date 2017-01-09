@@ -48,7 +48,11 @@ const c = React.createClass({
     componentDidMount() {
         if (isEmptyObject(this.props.stateShot)) {
             this.fetchData();
-
+            let currentNode = this.state.nodes[0];
+            currentNode.key = 0;
+            this.setState({
+            currentNode: currentNode
+        })
         } else {
             this.setState({ ...this.props.stateShot })
         }
@@ -127,7 +131,6 @@ const c = React.createClass({
         })
     },
     render() {
-
         return <div className="mksz">
             <div className="wrap">
                 <Panel >
