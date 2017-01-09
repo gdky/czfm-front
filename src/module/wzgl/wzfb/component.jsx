@@ -31,11 +31,12 @@ const c = React.createClass({
             nodes: '', currentNode: '', alert: '',view:'list',listState:'',detail:''
         }
     },
-    fetchData() {
+     fetchData(params = {lx:'yx'}) {
         const {apiUrl} = this.props;
         req({
             url: apiUrl,
             method: 'get',
+            data:params
         }).then(resp => {
             this.setState({ nodes: resp });
         }).catch(e => {
@@ -90,7 +91,8 @@ const c = React.createClass({
             //记录list组件被切换时状态值的方法
             grabState: this.grabListState,
             //list组件重新挂载时恢复状态用的历史状态数据
-            stateShot: this.state.listState
+            stateShot: this.state.listState,
+            lmid:this.state.currentNode.id
         };
         
         const view = {

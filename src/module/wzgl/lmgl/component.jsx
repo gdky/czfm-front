@@ -30,11 +30,12 @@ const c = React.createClass({
             nodes: '', currentNode: '', alert: ''
         }
     },
-    fetchData() {
+    fetchData(params = {lx:'all'}) {
         const {apiUrl} = this.props;
         req({
             url: apiUrl,
             method: 'get',
+            data:params
         }).then(resp => {
             this.setState({ nodes: resp });
         }).catch(e => {

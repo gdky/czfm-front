@@ -15,12 +15,12 @@ const model = {
         key: 'create_time',
         width: 130
     },{
-        title: '发送人',
+        title: '发布人',
         dataIndex: 'sender',
         key: 'sender',
         width: 130
     },{
-        title: '标题',
+        title: '文章标题',
         dataIndex: 'title',
         key: 'title',
         width: 300,
@@ -29,8 +29,8 @@ const model = {
         }
     },{
         title: '状态',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'state',
+        key: 'state',
         width: 100
     }]
 };
