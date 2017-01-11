@@ -22,9 +22,8 @@ let c = React.createClass({
         }
     },
     fetchData() {
-        const id = this.props.id
         req({
-            url:this.props.url+/{id},
+            url:this.props.url+'/'+this.props.id,
             method: 'get',
             data: params
         }).then(resp => {
