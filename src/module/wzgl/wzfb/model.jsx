@@ -11,8 +11,8 @@ const model = {
     },
     columns: [{
         title: '时间',
-        dataIndex: 'create_time',
-        key: 'create_time',
+        dataIndex: 'createtime',
+        key: 'createtime',
         width: 130
     },{
         title: '发布人',

@@ -88,21 +88,10 @@ const list = React.createClass({
     },
     render() {
         const {lmid, title, scrollx, keyCol, columns} = this.props;
-        let toolbar = <ToolBar>
-            <ButtonGroup>
-                <Button onClick={this.handleRefresh}><Icon type="reload" />刷新</Button>
-                <Button onClick={this.queryToggle}>
-                    <Icon type="search" />查询
-
-                </Button>
-            </ButtonGroup>
-        </ToolBar>;
         const rowSelection = {
             type: 'checkbox'
         };
-        return <Panel title={title} toolbar={toolbar}>
-
-            <Table columns={columns}
+        return <Table columns={columns}
                 dataSource={this.state.data}
                 pagination={this.state.pagination}
                 loading={this.state.loading}
@@ -111,7 +100,6 @@ const list = React.createClass({
                 rowKey={record => record[keyCol]}
                 rowClassName={(record) => { return record.id == this.state.entity.id ? 'row-selected' : '' } }
                 scroll={{ x: scrollx }} className='bg-wh' />
-        </Panel>
     }
 });
 

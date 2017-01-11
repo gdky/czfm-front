@@ -28,17 +28,8 @@ let c = React.createClass({
         let values = {
             title : this.props.form.getFieldValue('title'),
             content:this.refs.editor.handleValue(),
-            reciver:this.state.reciver,
-            type:2, //类型2为系统消息，暂时从本界面发送的消息都默认为系统消息
             groupsend:true
         };
-        if(isEmptyObject(values.reciver)){
-            Modal.error({
-                title: '所需信息未正确填写',
-                content: '未选择收件人',
-            });
-            return
-        }
         if(!values.title){
             Modal.error({
                 title: '所需信息未正确填写',
@@ -58,10 +49,10 @@ let c = React.createClass({
             method:'post',
             data:values
         }).then(resp=>{
-            message.success('短信息发送成功', 5);
+            message.success('发布成功', 5);
             this.props.onBack()
         }).catch(e=>{
-            message.error('短信息发送失败，请点击"发送按钮"重新发送',5)
+            message.error('发布失败，请点击"提交按钮"重新发送',5)
         })
     },
     closeReciver(){

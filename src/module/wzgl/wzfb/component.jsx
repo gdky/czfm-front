@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Icon, Alert, Col, Row, Form, notification } from 'antd'
+import { Button, Icon, Alert, Col, Row, Form, notification, Modal } from 'antd'
 import Toolbar from 'component/toolbar'
 import config from 'common/configuration'
 import req from 'common/request'
@@ -28,15 +28,15 @@ const c = React.createClass({
     },
     getInitialState() {
         return {
-            nodes: '', currentNode: '', alert: '',view:'list',listState:'',detail:''
+            nodes: '', currentNode: '', mode: '', view: 'list', listState: '', detail: '',entity: {},
         }
     },
-     fetchData(params = {lx:'yx'}) {
+    fetchData(params = { lx: 'yx' }) {
         const {apiUrl} = this.props;
         req({
             url: apiUrl,
             method: 'get',
-            data:params
+            data: params
         }).then(resp => {
             this.setState({ nodes: resp });
         }).catch(e => {
@@ -64,25 +64,55 @@ const c = React.createClass({
         }
 
         this.setState({
-            currentNode: currentNode,
-            alert: ''
+            currentNode: currentNode
         })
     },
     /*计算column里定义的width总和，没有定义width的列宽按100(px)计算*/
-    getColWidth(model){
+    getColWidth(model) {
         let w = 0;
         model.columns.map(item => {
             w = item.width ? w + item.width : w + 100;
         });
         return w;
     },
+    newMsg() {
+        let view = this.state.view;
+        const lmid = this.state.currentNode.id;
+        if (view == 'list') {
+            if (!lmid) {
+                Modal.error({
+                    title: '未选择栏目',
+                    content: '未选择栏目信息！',
+                });
+                return
+            } else {
+                view = 'newWz'
+            }
+
+        } else {
+            view = 'list'
+        }
+        this.setState({
+            view: view,
+            mode:'new'
+        })
+    },
+    //返回list视图
+    async backToList() {
+        await this.setState({ view: 'list' });
+        await this.refreshList()
+    },
+    openDetail(record){
+        this.setState({entity: record,
+            mode:'read'})
+    },
     render() {
-         /*设置列表组件的参数 */
+        /*设置列表组件的参数 */
         const m = cloneDeep(model);
         const actColWidth = 100;
         m.setfunc(this.openDetail);
 
-         /*设置列表组件的参数 */
+        /*设置列表组件的参数 */
         const listSetting = {
             //列表可滚动区间的宽度，一般使用getcolwidth计算即可
             scrollx: this.getColWidth(model) - actColWidth,
@@ -92,36 +122,41 @@ const c = React.createClass({
             grabState: this.grabListState,
             //list组件重新挂载时恢复状态用的历史状态数据
             stateShot: this.state.listState,
-            lmid:this.state.currentNode.id
+            lmid: this.state.currentNode.id
         };
-        
-        const view = {
-            list:<List {...listSetting} ref="list"/>,
-            newWz:<NewWz  />
+        /* 设置新建信息组件参数*/
+        const newWzSetting = {
+            onBack: this.backToList,
+            lmid: this.state.currentNode.id
+
         };
 
         return <div className="mksz">
             <div className="wrap">
-                <Panel >
-                    <Row>
-                        <Col span="5" className="tree-box">
-                            <Row>
-                                <LmMenu data={this.state.nodes} onClick={this.handleClick} ref="Menu" />
-                            </Row>
-                        </Col>
-                        <Col span="19" className="tree-node-edit">
-                         <Toolbar>
-                    <Button type="primary" onClick={this.newMsg}><Icon type="message"/>发布文章</Button>
-                   
-                </Toolbar>
-                            {view[this.state.view]}
-                        </Col>
-                    </Row>
+                {this.state.view == 'list' ?
+                    <Panel >
+                        <Row>
+                            <Col span="5" className="tree-box">
+                                <Row>
+                                    <LmMenu data={this.state.nodes} onClick={this.handleClick} ref="Menu" />
+                                </Row>
+                            </Col>
+                            <Col span="19" className="tree-node-edit">
+                                <Toolbar>
+                                    <Button type="primary" onClick={this.newMsg}><Icon type="message" />发布文章</Button>
+                                    <Button type="primary" onClick={this.newMsg}><Icon type="message" />删除文章</Button>
+                                </Toolbar>
+                                <List {...listSetting} ref="list" />
+                            </Col>
+                        </Row>
 
 
-                </Panel>
+                    </Panel> :
+                    <NewWz  {...newWzSetting} />
+                }
 
             </div>
+
         </div>
     }
 
