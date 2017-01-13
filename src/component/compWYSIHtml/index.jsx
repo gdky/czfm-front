@@ -11,7 +11,12 @@ import  './simditor.css'
 const WYS = React.createClass({
    getDefaultProps(){
         return {
-            tID:"textarea",
+            tID:"textarea"
+        }
+    },
+    getInitialState() {
+        return {
+            editor:{}
         }
     },
     //  componentWillReceiveProps(nextProps){//检测父组件state变化
@@ -24,6 +29,7 @@ const WYS = React.createClass({
     	let editValue=this.state.editor.getValue();
     	return editValue;
     },
+    
    componentDidMount(){
        let tName =this.props.tID;
         var textbox = ReactDOM.findDOMNode(this.refs[tName]);
@@ -50,12 +56,15 @@ const WYS = React.createClass({
                         'alignment',
                       ],
         });
-        if (typeof this.props.value ==='string') {
-            editor.setValue(this.props.value);
-        };
+        
         this.setState({editor:editor});
    },
     render(){
+        let editor = this.state.editor;
+        if (typeof this.props.value ==='string') {
+            
+            editor.setValue(this.props.value);
+        };
         return <div {...this.props}>
 	        <textarea ref={this.props.tID} />
 	        </div>

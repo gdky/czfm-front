@@ -57,6 +57,10 @@ const Index = React.createClass({
                 //站内短信
                 require('../module/zndx'),
 
+                //文章管理
+                require('../module/wzgl/lmgl'),
+                require('../module/wzgl/wzfb'),
+                
                 //公用功能
                 //修改密码
                 require('../module/updatepass')
