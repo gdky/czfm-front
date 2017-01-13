@@ -7,6 +7,8 @@ import LmMenu from '../menu'
 import model from './model'
 import cloneDeep from 'lodash/cloneDeep';
 import NewWz from './newWz'
+import EditWz from './editWz'
+import ReadWz from './readWz'
 import List from './list'
 import Panel from 'component/compPanel'
 import { jsonCopy, isEmptyObject } from 'common/utils'
@@ -20,6 +22,7 @@ const c = React.createClass({
             keyCol: 'id',
             //数据来源api
             apiUrl: config.URI_API_PROJECT + `/wzglmenu`,
+            delelWzUrl: config.URI_API_PROJECT + `/deletewz`,
             //初始搜索条件
             defaultWhere: {},
             //栏目名称
@@ -28,7 +31,7 @@ const c = React.createClass({
     },
     getInitialState() {
         return {
-            nodes: '', currentNode: '', mode: '', view: 'list', listState: '', detail: '',entity: {},
+            nodes: '', currentNode: '', mode: '', view: 'list', listState: '', detail: '', entity: {},
         }
     },
     fetchData(params = { lx: 'yx' }) {
@@ -66,6 +69,7 @@ const c = React.createClass({
         this.setState({
             currentNode: currentNode
         })
+        this.refs.list.flushData(currentNode.id);
     },
     /*计算column里定义的width总和，没有定义width的列宽按100(px)计算*/
     getColWidth(model) {
@@ -93,24 +97,53 @@ const c = React.createClass({
             view = 'list'
         }
         this.setState({
-            view: view,
-            mode:'new'
+            view: view
         })
     },
     //返回list视图
     async backToList() {
+        const lmid = this.state.currentNode.id;
         await this.setState({ view: 'list' });
-        await this.refreshList()
+        await this.refs.list.flushData(lmid);
     },
-    openDetail(record){
-        this.setState({entity: record,
-            mode:'read'})
+    openDetail(record) {
+        this.setState({
+            entity: record,
+            view: 'readWz'
+        })
+    },
+    editWz(record) {
+        this.setState({
+            entity: record,
+            view: 'editWz'
+        })
+    },
+    delWz() {
+        let row = this.refs.list.onSelect();
+        const {delelWzUrl} = this.props;
+        const lmid = this.state.currentNode.id;
+        if (row) {
+            req({
+                url: delelWzUrl,
+                method: 'delete',
+                data: row
+            }).then((resp) => {
+                this.refs.list.flushData(lmid);
+            }).catch(e => {
+                notification.error({
+                    duration: 2,
+                    message: '数据删除失败',
+                    description: '网络访问故障，请尝试刷新页面'
+                });
+            });
+        }
+
     },
     render() {
         /*设置列表组件的参数 */
         const m = cloneDeep(model);
         const actColWidth = 100;
-        m.setfunc(this.openDetail);
+        m.setfunc(this.openDetail, this.editWz);
 
         /*设置列表组件的参数 */
         const listSetting = {
@@ -127,33 +160,51 @@ const c = React.createClass({
         /* 设置新建信息组件参数*/
         const newWzSetting = {
             onBack: this.backToList,
-            lmid: this.state.currentNode.id
+            lmid: this.state.currentNode.id,
+            mode: this.state.mode,
+            id: this.state.entity.id
 
         };
+        const readWzSetting = {
+            onBack: this.backToList,
+            lmid: this.state.currentNode.id,
+            mode: this.state.mode,
+            id: this.state.entity.id
 
+        };
+        const editWzSetting = {
+            onBack: this.backToList,
+            lmid: this.state.currentNode.id,
+            mode: this.state.mode,
+            id: this.state.entity.id
+
+        };
+        const view = {
+            list: <Panel >
+                <Row>
+                    <Col span="5" className="tree-box">
+                        <Row>
+                            <LmMenu data={this.state.nodes} onClick={this.handleClick} ref="Menu" />
+                        </Row>
+                    </Col>
+                    <Col span="19" className="tree-node-edit">
+                        <Toolbar>
+                            <Button type="primary" onClick={this.newMsg}><Icon type="message" />发布文章</Button>
+                            <Button type="primary" onClick={this.delWz}><Icon type="message" />删除文章</Button>
+                        </Toolbar>
+                        <List {...listSetting} ref="list" />
+                    </Col>
+                </Row>
+
+
+            </Panel>,
+            newWz: <NewWz {...newWzSetting} />,
+            editWz: <EditWz {...editWzSetting} />,
+            readWz: <ReadWz {...readWzSetting} />
+        };
         return <div className="mksz">
             <div className="wrap">
-                {this.state.view == 'list' ?
-                    <Panel >
-                        <Row>
-                            <Col span="5" className="tree-box">
-                                <Row>
-                                    <LmMenu data={this.state.nodes} onClick={this.handleClick} ref="Menu" />
-                                </Row>
-                            </Col>
-                            <Col span="19" className="tree-node-edit">
-                                <Toolbar>
-                                    <Button type="primary" onClick={this.newMsg}><Icon type="message" />发布文章</Button>
-                                    <Button type="primary" onClick={this.newMsg}><Icon type="message" />删除文章</Button>
-                                </Toolbar>
-                                <List {...listSetting} ref="list" />
-                            </Col>
-                        </Row>
-
-
-                    </Panel> :
-                    <NewWz  {...newWzSetting} />
-                }
+                {view[this.state.view]}
 
             </div>
 

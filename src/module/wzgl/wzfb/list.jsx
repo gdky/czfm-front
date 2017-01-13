@@ -49,7 +49,8 @@ const list = React.createClass({
     },
 
     //通过API获取数据
-    fetchData(params = { page: 1, pagesize: this.props.pageSize ,lmid:this.state.lmid}) {
+    flushData(lmid) {
+        const params = { page: 1, pagesize: this.props.pageSize, lmid: lmid };
         this.setState({ loading: true });
         const {apiUrl, defaultWhere} = this.props;
         let where = merge(jsonCopy(defaultWhere), params.where);
@@ -78,28 +79,39 @@ const list = React.createClass({
             });
         })
     },
-      //组件加载时读取数据
-    componentDidMount(){
-        if(isEmptyObject(this.props.stateShot)){
-            this.fetchData();
-        }else{
-            this.setState({...this.props.stateShot})
+    //组件加载时读取数据
+    componentDidMount() {
+        if (isEmptyObject(this.props.stateShot)) {
+            //this.fetchData();
+        } else {
+            this.setState({ ...this.props.stateShot })
         }
+    },
+    onSelect() {
+        return this.state.selectedRowKeys;
+    },
+    onSelectChange(selectedRowKeys) {
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        this.setState({ selectedRowKeys });
     },
     render() {
         const {lmid, title, scrollx, keyCol, columns} = this.props;
+        const { loading, selectedRowKeys } = this.state;
         const rowSelection = {
-            type: 'checkbox'
+            type: 'checkbox',
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+
         };
         return <Table columns={columns}
-                dataSource={this.state.data}
-                pagination={this.state.pagination}
-                loading={this.state.loading}
-                size="middle"
-                rowSelection={rowSelection}
-                rowKey={record => record[keyCol]}
-                rowClassName={(record) => { return record.id == this.state.entity.id ? 'row-selected' : '' } }
-                scroll={{ x: scrollx }} className='bg-wh' />
+            dataSource={this.state.data}
+            pagination={this.state.pagination}
+            loading={this.state.loading}
+            size="middle"
+            rowSelection={rowSelection}
+            rowKey={record => record[keyCol]}
+            rowClassName={(record) => { return record.id == this.state.entity.id ? 'row-selected' : '' } }
+            scroll={{ x: scrollx }} className='bg-wh' />
     }
 });
 

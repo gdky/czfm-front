@@ -5,9 +5,13 @@ import React from 'react'
 function openlink(record){
 
 }
+function editlink(record){
+
+}
 const model = {
-    setfunc(func){
-        openlink = func
+    setfunc(funcO,funcE){
+        openlink = funcO,
+        editlink = funcE
     },
     columns: [{
         title: '时间',
@@ -32,7 +36,14 @@ const model = {
         dataIndex: 'state',
         key: 'state',
         width: 100
-    }]
+    },{
+        title:'操作',
+        width: 100,
+        render(text,record){
+            return <a onClick={()=> {editlink(record)}}>{'编辑'}</a>
+        }
+    }
+    ]
 };
 
 module.exports = model;

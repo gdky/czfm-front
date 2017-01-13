@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Row, Col, Button, Tooltip, message, Modal } from 'antd'
+import { Input, Form, Row, Col, Button, Tooltip,notification, message, Modal } from 'antd'
 import Panel from 'component/compPanel'
 import Rich from 'component/compWYSIHtml'
 import req from 'common/request'
@@ -12,51 +12,47 @@ const ToolBar = Panel.ToolBar;
 let c = React.createClass({
     getDefaultProps() {
         return {
-            url: config.URI_API_PROJECT + `/newwz`,
+            geturl: config.URI_API_PROJECT + `/getwz`,
+            editurl: config.URI_API_PROJECT + `/editwz`,
         }
     },
     getInitialState() {
-        return { data: {} }
+        return {data:{}}
     },
     back() {
         this.props.onBack()
     },
-    //保存
-    handleSave(values) {
-        const {url} = this.props;
-        values.ztbj = 0;
-        this.setState({ loading: true });
+    fetchData() {
+        const {id} = this.props;
         req({
-            method: 'post',
-            url: url,
-            data: values
+             url: this.props.geturl+'/'+id,
+            method: 'get'
         }).then(resp => {
-            this.setState({ loading: false, scr: 'success', successType: 'save' })
-        }).catch(e => {
-            this.setState({ loading: false });
-            if (e.status == 403) {
-                let res = JSON.parse(e.response);
-                notification.error({
-                    duration: 3,
-                    message: '操作失败',
-                    description: res.text
-                });
-            } else {
-                notification.error({
-                    duration: 3,
-                    message: '操作失败',
-                    description: '报表数据保存失败，请稍后再尝试'
-                });
-            }
-        });
-    },
 
-    handleCommit(values, contenet) {
-        console.log(contenet);
+            this.setState({ data: resp });
+        }).catch(e => {
+            console.log(e)
+            notification.error({
+                duration: 2,
+                message: '数据读取失败',
+                description: '网络访问故障，请尝试刷新页面'
+            });
+        })
+    },
+    componentDidMount() {
+        if (isEmptyObject(this.props.stateShot)) {
+            this.fetchData();
+        } else {
+            this.setState({ ...this.props.stateShot })
+        }
+    },
+    handleCommit(values,contenet) {
+        const {id} = this.props;
         let datas = {
             title: values.title,
             content: contenet,
-            lmid: this.props.lmid
+            lmid: this.props.lmid,
+            id:id
         };
         if (!values.title) {
             Modal.error({
@@ -73,14 +69,14 @@ let c = React.createClass({
             return
         }
         req({
-            url: this.props.url,
-            method: 'post',
+            url: this.props.editurl+'/'+datas.id,
+            method: 'put',
             data: datas
         }).then(resp => {
-            message.success('发布成功', 5);
+            message.success('修改成功', 5);
             this.props.onBack()
         }).catch(e => {
-            message.error('发布失败，请点击"提交按钮"重新发送', 5)
+            message.error('修改失败，请点击"提交按钮"重新发送', 5)
         })
     },
     render() {
@@ -90,6 +86,8 @@ let c = React.createClass({
                 <Button type="ghost" shape="circle-outline" icon="double-left" onClick={this.back} />
             </Tooltip>
         </ToolBar>;
+
+
         return <Panel title="编辑新信息" toolbar={toolbar}>
 
             <Editfrom data={data}
