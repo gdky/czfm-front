@@ -11,7 +11,7 @@ const MenuItemGroup = Menu.ItemGroup;
 const c = React.createClass({
     getInitialState() {
         return {
-             current: '1',
+            current: '1',
         }
     },
     getDefaultProps() {
@@ -26,9 +26,7 @@ const c = React.createClass({
     getMenu(data) {
         return data.map(function (item) {
             let title;
-
             title = <span>{item.mc}</span>;
-
             if (item.children) {
                 return <SubMenu key={item.key} title={title} children={this.getMenu(item.children)} />;
             } else {
@@ -74,8 +72,8 @@ const c = React.createClass({
             let asideMenu = this.getMenu(menuData);
             return (
                 <Menu onClick={this.handleClick}
-                  onOpen = {this.handleClick}
-                  onClose ={this.handleClick}
+                    onOpen={this.handleClick}
+                    onClose={this.handleClick}
                     defaultOpenKeys={['sub1']}
                     selectedKeys={[this.state.current]}
                     mode="inline"

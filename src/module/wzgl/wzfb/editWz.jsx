@@ -89,7 +89,6 @@ let c = React.createClass({
 
 
         return <Panel title="编辑新信息" toolbar={toolbar}>
-
             <Editfrom data={data}
                 onCommit={this.handleCommit}
                 onSave={this.handleSave}
