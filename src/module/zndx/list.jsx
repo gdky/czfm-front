@@ -20,7 +20,7 @@ const list = React.createClass({
             pageSize: 10,
             //数据来源api
             apiUrl: config.URI_API_FRAMEWORK  + `/sendbox`,
-            //初始搜索条件
+            //初始搜索条件p-
             defaultWhere:{},
             //栏目名称
             title:'发件箱'

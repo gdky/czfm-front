@@ -1,0 +1,18 @@
+.mksz .panel-body {
+    padding: 16px;
+}
+
+.mksz .toolbar{
+    padding:16px;
+    font-weight: 600;
+}
+.mksz .toolbar button{
+    margin-bottom: 8px;
+}
+.mksz .tree-box{
+    height:100%
+}
+.mksz .tree-node-edit{
+    border-left:1px solid #e9e9e9;
+    padding: 16px;
+}
