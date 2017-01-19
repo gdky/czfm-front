@@ -56,6 +56,7 @@ const Index = React.createClass({
 
                 //站内短信
                 require('../module/zndx'),
+                require('../module/yysc'),
 
                 //文章管理
                 require('../module/wzgl/lmgl'),

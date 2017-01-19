@@ -101,7 +101,8 @@ var config = {
         contentBase: "entry",
         hot:true,
         proxy: {
-            "/api/*": "http://localhost:8080/"
+            "/api/*": "http://localhost:8080/",
+            "/files/*": "http://localhost:8080/"
         },
         compress: true,
         historyApiFallback:true
