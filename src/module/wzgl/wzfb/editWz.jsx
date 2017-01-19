@@ -46,13 +46,14 @@ let c = React.createClass({
             this.setState({ ...this.props.stateShot })
         }
     },
-    handleCommit(values,contenet) {
+    handleCommit(values,contenet,audio) {
         const {id} = this.props;
         let datas = {
             title: values.title,
             content: contenet,
             lmid: this.props.lmid,
-            id:id
+            id:id,
+            audioid:audio.key
         };
         if (!values.title) {
             Modal.error({

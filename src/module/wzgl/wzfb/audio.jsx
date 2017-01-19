@@ -23,7 +23,7 @@ const c = React.createClass({
             url: this.props.url,
             method: 'get'
         }).then(resp => {
-            this.setState({ data: resp });
+            this.setState({ data: resp,value:resp[0].ID });
         }).catch(e => {
             console.log(e)
             notification.error({
@@ -46,8 +46,13 @@ const c = React.createClass({
     handleOk() {
         const {onOk} = this.props;
         let data = this.state.data;
-        console.log(onOk)
-        //onOk({key: this.state.value, label: data[this.state.value]})
+        let value = this.state.value;
+        let label ;
+         data.forEach(function (prop) {
+               if(prop.ID==value)
+               label=prop.BT;
+            })
+        onOk({key: value, label:label})
     },
 
     getRadios() {
@@ -60,7 +65,7 @@ const c = React.createClass({
         let result = [];
         if (data.length > 0) {
             data.forEach(function (prop) {
-                result.push(<Radio style={radioStyle} key={prop.ID} value={prop.BT}>{prop.BT}</Radio>)
+                result.push(<Radio style={radioStyle} key={prop.ID} value={prop.ID}>{prop.BT}</Radio>)
             })
         }
 

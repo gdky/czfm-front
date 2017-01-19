@@ -13,13 +13,14 @@ let c = React.createClass({
     },
     getInitialState(){
         return {
-            modal:false
+            modal:false,audio:{}
         }
     },
     commit() {
+        
         const {getFieldsValue} = this.props.form;
-        this.props.onCommit(getFieldsValue(), this.refs.editor.handleValue(), );
-
+        this.props.onCommit(getFieldsValue(), this.refs.editor.handleValue(),this.state.audio );
+        
     },
     save() {
         const {getFieldsValue} = this.props.form;
@@ -33,10 +34,12 @@ let c = React.createClass({
         this.setState({modal:true})
     },
     getReciver(obj){
+       
+        this.setState({audio:obj});
         this.closeReciver()
     },
     render() {
-        const {modal} = this.state;
+        const {modal,audio} = this.state;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {
             labelCol: { span: 2 },
@@ -61,6 +64,7 @@ let c = React.createClass({
                     <FormItem
                         labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}
                         label="音频文件" required>
+                        {audio.label}
                         <Button onClick={this.openReciver}>选择</Button>
                     </FormItem>
                 </Row>

@@ -2,37 +2,40 @@ import React from 'react'
 import { Button, Icon, Alert, Col, Row, Form, notification } from 'antd'
 import Detail from 'component/msgDetail'
 import config from 'common/configuration'
-import req from 'reqwest'
+import req from 'common/request'
 import Panel from 'component/compPanel'
 import { jsonCopy, isEmptyObject } from 'common/utils'
 import cloneDeep from 'lodash/cloneDeep';
 import './style.css'
-import auth from 'common/auth'
 
 const c = React.createClass({
+      getDefaultProps() {
+        return {
+            //接收的json数据中用来充当key的字段名
+            keyCol: 'id',
+            //数据来源api
+            apiUrl:  config.URI_API_PROJECT+`/test`,
+            //初始搜索条件
+            defaultWhere: {},
+            //栏目名称
+            title: '文章发布'
+        }
+    },
     getInitialState() {
         return {
-            access_token: ''
+            data:''
         }
     },
     fetchData() {
-       // const {apiUrl, grant_type, client_id, client_secret} = this.props;
-        let apiUrl= 'http://tsn.baidu.com/text2audio';
-        let params = {
-           tex: '许发森',
-            lan: 'zh',
-            tok: '24.169f669ce58e2817c507abdb8f436fd4.2592000.1487317967.282335-9217047',
-            ctp:'1',
-            cuid:'xfs'
-        }
-        
+        const {apiUrl} = this.props;
+      
         req({
             url: apiUrl,
-            method: 'post',
-            data: encodeURI(encodeURI(JSON.stringify(params))),
-            headers: {'x-auth-token': auth.getToken()}
+            method: 'GET',
         }).then(resp => {
-            console.log(resp)
+          
+			this.setState({ data: resp });
+        
         }).catch(e => {
             notification.error({
                 duration: 2,
@@ -47,6 +50,8 @@ const c = React.createClass({
     },
     render() {
         return <div className="mksz">
+        <audio
+            src={this.state.data}></audio>
         </div>
     }
 
