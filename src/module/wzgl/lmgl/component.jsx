@@ -19,8 +19,6 @@ const c = React.createClass({
             keyCol: 'id',
             //数据来源api
             apiUrl: config.URI_API_PROJECT + `/wzglmenu`,
-            //初始搜索条件
-            defaultWhere: {},
             //栏目名称
             title: '栏目管理'
         }
@@ -30,12 +28,12 @@ const c = React.createClass({
             nodes: '', currentNode: '', alert: ''
         }
     },
-    fetchData(params = {lx:'all'}) {
+    fetchData(params = { lx: 'all' }) {
         const {apiUrl} = this.props;
         req({
             url: apiUrl,
             method: 'get',
-            data:params
+            data: params
         }).then(resp => {
             this.setState({ nodes: resp });
         }).catch(e => {
@@ -52,8 +50,8 @@ const c = React.createClass({
             let currentNode = this.state.nodes[0];
             currentNode.key = 0;
             this.setState({
-            currentNode: currentNode
-        })
+                currentNode: currentNode
+            })
         } else {
             this.setState({ ...this.props.stateShot })
         }
@@ -71,13 +69,11 @@ const c = React.createClass({
             alert: ''
         })
     },
-    addNode() {
+    //添加主栏目
+    addPnode() {
         const {apiUrl} = this.props;
         let pid = 0;
-        if (this.state.currentNode) {
-            pid = this.state.currentNode.id;
-        }
-        let newNode = { pid: pid, mc: '新模块' };
+        let newNode = { pid: pid, mc: '新模块', yxbz: '1' };
         req({
             url: apiUrl,
             method: 'post',
@@ -86,7 +82,7 @@ const c = React.createClass({
             ({ id: newNode.id } = resp);
             let tmpArr = this.state.nodes.slice(0);
             tmpArr.push(newNode);
-            this.setState({ nodes: tmpArr })
+            this.setState({ alert: '新增成功', nodes: tmpArr })
         }).catch(e => {
             notification.error({
                 duration: 2,
@@ -95,13 +91,39 @@ const c = React.createClass({
             });
         })
     },
+    //添加栏目
+    addNode() {
+        const {apiUrl} = this.props;
+        let pid = 0;
+        if (this.state.currentNode) {
+            pid = this.state.currentNode.id;
+        }
+        let newNode = { pid: pid, mc: '新模块', yxbz: '1' };
+        req({
+            url: apiUrl,
+            method: 'post',
+            data: newNode
+        }).then(resp => {
+            ({ id: newNode.id } = resp);
+            let tmpArr = this.state.nodes.slice(0);
+            tmpArr.push(newNode);
+            this.setState({ alert: '新增成功',nodes: tmpArr })
+        }).catch(e => {
+            notification.error({
+                duration: 2,
+                message: '数据读取失败',
+                description: '网络访问故障，请尝试刷新页面'
+            });
+        })
+    },
+    //删除栏目
     removeNode() {
         const {apiUrl} = this.props;
         req({
             url: apiUrl + '/' + this.state.currentNode.id,
             method: 'delete'
         }).then((resp) => {
-            this.setState({ nodes: resp });
+            this.setState({alert: '删除成功', nodes: resp });
         }).catch(e => {
             notification.error({
                 duration: 2,
@@ -122,7 +144,7 @@ const c = React.createClass({
         }).then(resp => {
             let tmpArr = this.state.nodes.slice(0);
             tmpArr[this.state.currentNode.key] = submitNode;
-            this.setState({ alert: '修改成功', nodes: tmpArr,currentNode:submitNode })
+            this.setState({ alert: '修改成功', nodes: tmpArr, currentNode: submitNode })
         }).catch(e => {
             notification.error({
                 duration: 2,
@@ -136,13 +158,13 @@ const c = React.createClass({
             <div className="wrap">
                 <Panel >
                     <Row>
-                        <Col span="6" className="tree-box">
+                        <Col span="5" className="tree-box">
                             <Row>
-                                <Toolbar addNode={this.addNode} removeNode={this.removeNode} />
+                                <Toolbar addPnode = {this.addPnode}addNode={this.addNode} removeNode={this.removeNode} />
                                 <LmMenu data={this.state.nodes} onClick={this.handleClick} ref="Menu" />
                             </Row>
                         </Col>
-                        <Col span="18" className="tree-node-edit">
+                        <Col span="19" className="tree-node-edit">
                             <Row><Col><MenuEdit data={this.state.currentNode} onSubmit={this.handleSubmit} ref="menuEdit" /></Col>
                             </Row>
                             {this.state.alert ?

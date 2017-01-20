@@ -184,7 +184,9 @@ const c = React.createClass({
                 <Row>
                     <Col span="5" className="tree-box">
                         <Row>
+                        <div className = 'menu'>
                             <LmMenu data={this.state.nodes} onClick={this.handleClick} ref="Menu" />
+                        </div>
                         </Row>
                     </Col>
                     <Col span="19" className="tree-node-edit">

@@ -49,9 +49,9 @@ const list = React.createClass({
     },
 
     //通过API获取数据
-    flushData(lmid) {
-        const params = { page: 1, pagesize: this.props.pageSize, lmid: lmid };
+    flushData(lmid,params = { page: 1, pagesize: this.props.pageSize }) {
         this.setState({ loading: true });
+        params.lmid=lmid;
         const {apiUrl, defaultWhere} = this.props;
         let where = merge(jsonCopy(defaultWhere), params.where);
         if (!isEmptyObject(where)) {
@@ -94,6 +94,14 @@ const list = React.createClass({
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.setState({ selectedRowKeys });
     },
+    handleChange(pagination, filters, sorter) {
+        const lmid =this.props.lmid;
+        let param = {
+            page: pagination.current,
+            pagesize: pagination.pageSize
+        };
+        this.flushData(lmid,param)
+    },
     render() {
         const {lmid, title, scrollx, keyCol, columns} = this.props;
         const { loading, selectedRowKeys } = this.state;
@@ -107,6 +115,7 @@ const list = React.createClass({
             dataSource={this.state.data}
             pagination={this.state.pagination}
             loading={this.state.loading}
+            onChange={this.handleChange}
             size="middle"
             rowSelection={rowSelection}
             rowKey={record => record[keyCol]}
