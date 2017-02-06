@@ -3,23 +3,27 @@ import { Input, Form, Row, Col, Button, Tooltip, message, Modal } from 'antd'
 import Panel from 'component/compPanel'
 import Rich from 'component/compWYSIHtml'
 import Audio from './audio'
+import UploadFj from './upload'
+import config from 'common/configuration'
+
 
 const FormItem = Form.Item;
 const createForm = Form.create;
 
 let c = React.createClass({
     getDefaultProps() {
-        return 
+        return {
+        }
     },
     getInitialState(){
         return {
-            modal:false,audio:{}
+            modal:false,audio:{},uploadUrl:''
         }
     },
     commit() {
         
         const {getFieldsValue} = this.props.form;
-        this.props.onCommit(getFieldsValue(), this.refs.editor.handleValue(),this.state.audio );
+        this.props.onCommit(getFieldsValue(), this.refs.editor.handleValue(),this.state.audio,this.state.uploadUrl );
         
     },
     save() {
@@ -38,8 +42,11 @@ let c = React.createClass({
         this.setState({audio:obj});
         this.closeReciver()
     },
+    uploadOk(uploadUrl){
+        this.setState({uploadUrl:uploadUrl})
+    },
     render() {
-        const {modal,audio} = this.state;
+        const {modal,audio,uploadUrl} = this.state;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {
             labelCol: { span: 2 },
@@ -68,7 +75,14 @@ let c = React.createClass({
                         <Button onClick={this.openReciver}>选择</Button>
                     </FormItem>
                 </Row>
-
+                <Row>
+                    <FormItem
+                        labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}
+                        label="上传附件" required>
+                        {uploadUrl}
+                     <UploadFj uploadOk={this.uploadOk} />
+                    </FormItem>
+                </Row>
                 <Row>
                     <FormItem
                         {...formItemLayout}

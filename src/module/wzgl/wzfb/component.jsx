@@ -22,7 +22,9 @@ const c = React.createClass({
             keyCol: 'id',
             //数据来源api
             apiUrl: config.URI_API_PROJECT + `/wzglmenu`,
-            delelWzUrl: config.URI_API_PROJECT + `/deletewz`,
+            deleleWzUrl: config.URI_API_PROJECT + `/deletewz`,
+            releaseWzUrl:config.URI_API_PROJECT + `/releasewz`,
+            cancelWzUrl:config.URI_API_PROJECT + `/cancelwz`,
             //初始搜索条件
             defaultWhere: {},
             //栏目名称
@@ -120,11 +122,11 @@ const c = React.createClass({
     },
     delWz() {
         let row = this.refs.list.onSelect();
-        const {delelWzUrl} = this.props;
+        const {deleleWzUrl} = this.props;
         const lmid = this.state.currentNode.id;
         if (row) {
             req({
-                url: delelWzUrl,
+                url: deleleWzUrl,
                 method: 'delete',
                 data: row
             }).then((resp) => {
@@ -139,9 +141,44 @@ const c = React.createClass({
         }
     },
     releaseWz(){
-
-    },cancelWz(){
-
+         let row = this.refs.list.onSelect();
+        const {releaseWzUrl} = this.props;
+        const lmid = this.state.currentNode.id;
+        if (row) {
+            req({
+                url: releaseWzUrl,
+                method: 'put',
+                data: row
+            }).then((resp) => {
+                this.refs.list.flushData(lmid);
+            }).catch(e => {
+                notification.error({
+                    duration: 2,
+                    message: '数据修改失败',
+                    description: '网络访问故障，请尝试刷新页面'
+                });
+            });
+        }
+    },
+    cancelWz(){
+         let row = this.refs.list.onSelect();
+        const {cancelWzUrl} = this.props;
+        const lmid = this.state.currentNode.id;
+        if (row) {
+            req({
+                url: cancelWzUrl,
+                method: 'put',
+                data: row
+            }).then((resp) => {
+                this.refs.list.flushData(lmid);
+            }).catch(e => {
+                notification.error({
+                    duration: 2,
+                    message: '数据修改失败',
+                    description: '网络访问故障，请尝试刷新页面'
+                });
+            });
+        }
     },
     render() {
         /*设置列表组件的参数 */
