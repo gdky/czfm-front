@@ -79,7 +79,7 @@ const c = React.createClass({
         });
         return w;
     },
-    newMsg() {
+    newWz() {
         let view = this.state.view;
         const lmid = this.state.currentNode.id;
         if (view == 'list') {
@@ -137,6 +137,10 @@ const c = React.createClass({
                 });
             });
         }
+    },
+    releaseWz(){
+
+    },cancelWz(){
 
     },
     render() {
@@ -191,7 +195,9 @@ const c = React.createClass({
                     </Col>
                     <Col span="19" className="tree-node-edit">
                         <Toolbar>
-                            <Button type="primary" onClick={this.newMsg}><Icon type="message" />发布文章</Button>
+                            <Button type="primary" onClick={this.newWz}><Icon type="message" />新增文章</Button>
+                            <Button type="primary" onClick={this.releaseWz}><Icon type="message" />发布文章</Button>
+                            <Button type="primary" onClick={this.cancelWz}><Icon type="message" />作废文章</Button>
                             <Button type="primary" onClick={this.delWz}><Icon type="message" />删除文章</Button>
                         </Toolbar>
                         <List {...listSetting} ref="list" />
