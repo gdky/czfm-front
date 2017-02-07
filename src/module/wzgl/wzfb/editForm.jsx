@@ -20,6 +20,12 @@ let c = React.createClass({
             modal:false,audio:{},uploadUrl:''
         }
     },
+    componentWillReceiveProps(nextProps){
+        const data = nextProps.data
+        this.setState({uploadUrl:data.attachment,audio:{label:data.bt}})
+        
+         
+    },
     commit() {
         
         const {getFieldsValue} = this.props.form;
@@ -46,6 +52,7 @@ let c = React.createClass({
         this.setState({uploadUrl:uploadUrl})
     },
     render() {
+       
         const {modal,audio,uploadUrl} = this.state;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {

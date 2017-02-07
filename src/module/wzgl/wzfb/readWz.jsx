@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Row, Col, Button, Tooltip,notification, message, Modal } from 'antd'
+import { Input, Form, Row, Col, Button, Tooltip, notification, message, Modal } from 'antd'
 import Panel from 'component/compPanel'
 import Rich from 'component/compWYSIHtml'
 import req from 'common/request'
@@ -17,7 +17,7 @@ let c = React.createClass({
         }
     },
     getInitialState() {
-        return {data:{}}
+        return { data: {} }
     },
     back() {
         this.props.onBack()
@@ -25,10 +25,10 @@ let c = React.createClass({
     fetchData() {
         const {id} = this.props;
         req({
-             url: this.props.geturl+'/'+id,
+            url: this.props.geturl + '/' + id,
             method: 'get'
         }).then(resp => {
-
+        console.log(resp)
             this.setState({ data: resp });
         }).catch(e => {
             console.log(e)
@@ -43,24 +43,28 @@ let c = React.createClass({
         if (isEmptyObject(this.props.stateShot)) {
             this.fetchData();
         } else {
-            this.setState({ ...this.props.stateShot })
+            this.setState({...this.props.stateShot })
         }
     },
-    render() {
-        let data = this.state.data;
-        let toolbar = <ToolBar>
-            <Tooltip title="返回">
-                <Button type="ghost" shape="circle-outline" icon="double-left" onClick={this.back} />
-            </Tooltip>
-        </ToolBar>;
+render() {
+    let data = this.state.data;
+    let toolbar = <ToolBar>
+        <Tooltip title="返回">
+            <Button type="ghost" shape="circle-outline" icon="double-left" onClick={this.back} />
+        </Tooltip>
+    </ToolBar>;
 
 
-        return <Panel title={data.title} toolbar={toolbar}>
-      
-        <   div className="zw" dangerouslySetInnerHTML={{__html: data.content}}/>
-      
-        </Panel>
-    }
+    return <Panel title={data.title} toolbar={toolbar}>
+    
+        <   div className="zw" dangerouslySetInnerHTML={{ __html: data.content }}/>
+        <div>
+        <audio src={data.url} controls="controls"> 您的浏览器不支持 audio 标签。
+          </audio><br/>
+          <a href={data.attachment} target="_blank">附件下载</a>
+        </div>
+    </Panel>
+}
 });
 
 module.exports = c;
