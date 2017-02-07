@@ -91,7 +91,6 @@ const list = React.createClass({
         return this.state.selectedRowKeys;
     },
     onSelectChange(selectedRowKeys) {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.setState({ selectedRowKeys });
     },
     handleChange(pagination, filters, sorter) {
