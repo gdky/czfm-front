@@ -42,7 +42,14 @@ const model = {
         key: 'YXBZ',
         dataIndex: 'YXBZ',
         width:80
-    }]
+    },{
+        title: '操作',
+        dataIndex: 'cz',
+        key: 'cz',
+        render(text,record){
+            return <a onClick={()=> {openlink(record.URL)}}>试听</a>
+        }
+    },]
 };
 
 module.exports = model;

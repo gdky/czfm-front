@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Icon, Alert} from 'antd'
+import {Button, Icon, Alert,Modal} from 'antd'
 import Toolbar from 'component/toolbar'
 import List from './list'
 import Detail from 'component/msgDetail'
@@ -19,7 +19,9 @@ const c = React.createClass({
             helper: false,
             query: false,
             view:'list',
-            detail:false
+            detail:false,
+            visibleTest:false,
+            recURL:''
         }
     },
 
@@ -36,9 +38,9 @@ const c = React.createClass({
         await this.setState({view: 'list'});
         await this.refreshList()
     },
-    //打开详情信息视图
+    //试听操作
     openDetail(record){
-        this.setState({detail: true, entity: record})
+        this.setState({visibleTest: true, recURL: record})
     },
     //关闭详情视图
     closeDetail(){
@@ -63,7 +65,12 @@ const c = React.createClass({
         });
         return w;
     },
-
+    handleCancel() {
+        this.setState({
+        visibleTest: false,
+        recURL:''
+        });
+    },
     render(){
         //重新复制一个model对象，使修改不会影响原model对象，避免每次组件渲染时给原model对象累积赋值
         const m = cloneDeep(model);
@@ -105,6 +112,16 @@ const c = React.createClass({
         return <div className="zndx">
             <div className="wrap">
                 <Detail {...detailSetting}/>
+                <Modal title="测试语音"
+          visible={this.state.visibleTest}
+          onOk={this.handleCancel}
+          onCancel={this.handleCancel}
+        ><div style={{textAlign:"center"}}>
+          <audio src={this.state.recURL} controls="controls"  style={{width:"200px"}}>
+          您的浏览器不支持 audio 标签。
+          </audio>
+          </div>
+        </Modal>
                 {view[this.state.view]}
             </div>
         </div>
