@@ -111,7 +111,6 @@ const uploadYY = React.createClass({
       <div>
       <ButtonGroup>
         <Button type="primary" onClick={this.showModal}>上传语音</Button>
-        <Button type="primary" onClick={this.showModalTest}>测试语音</Button>
       </ButtonGroup>
         <Modal title="上传新语音"
           visible={this.state.visible}
