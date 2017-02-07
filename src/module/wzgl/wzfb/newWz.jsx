@@ -51,12 +51,13 @@ let c = React.createClass({
         });
     },
 
-    handleCommit(values, contenet,audio) {
+    handleCommit(values, contenet,audio,uploadUrl) {
         let datas = {
             title: values.title,
             content: contenet,
             lmid: this.props.lmid,
-            audioid:audio.key
+            audioid:audio.key,
+            uploadUrl:uploadUrl
         };
         if (!values.title) {
             Modal.error({
