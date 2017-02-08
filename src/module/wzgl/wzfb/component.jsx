@@ -232,10 +232,10 @@ const c = React.createClass({
                     </Col>
                     <Col span="19" className="tree-node-edit">
                         <Toolbar>
-                            <Button type="primary" onClick={this.newWz}><Icon type="message" />新增文章</Button>
+                            <Button type="primary" onClick={this.newWz}><Icon type="plus-circle-o" />新增文章</Button>
                             <Button type="primary" onClick={this.releaseWz}><Icon type="message" />发布文章</Button>
-                            <Button type="primary" onClick={this.cancelWz}><Icon type="message" />作废文章</Button>
-                            <Button type="primary" onClick={this.delWz}><Icon type="message" />删除文章</Button>
+                            <Button type="primary" onClick={this.cancelWz}><Icon type="minus-circle-o" />作废文章</Button>
+                            <Button type="primary" onClick={this.delWz}><Icon type="cross-circle-o" />删除文章</Button>
                         </Toolbar>
                         <List {...listSetting} ref="list" />
                     </Col>
