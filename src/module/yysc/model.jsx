@@ -26,7 +26,7 @@ const model = {
         title: '路径',
         dataIndex: 'URL',
         key: 'URL',
-        width: 300
+        width: 200
     },{
         title: '录入人',
         dataIndex: 'LRR',
@@ -36,7 +36,7 @@ const model = {
         title: '录入日期',
         key: 'LRRQ',
         dataIndex: 'LRRQ',
-        width:200
+        width:100
     },{
         title: '有效标志',
         key: 'YXBZ',

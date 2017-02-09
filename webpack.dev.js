@@ -102,7 +102,7 @@ var config = {
         hot:true,
         proxy: {
             "/api/*": "http://localhost:8080/",
-            "/files/*": "http://localhost:8080/",
+            "/czfmfiles/*": "http://localhost:8080/",
             "/pub/*": "http://localhost:8080/"
         },
         compress: true,
