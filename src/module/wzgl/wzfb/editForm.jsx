@@ -22,7 +22,7 @@ let c = React.createClass({
     },
     componentWillReceiveProps(nextProps) {
         const data = nextProps.data
-        this.setState({ uploadUrl: data.attachment, audio: { label: data.bt } })
+        this.setState({ uploadUrl: data.attachment, audio: { label: data.bt,key:data.rekey } })
 
 
     },
