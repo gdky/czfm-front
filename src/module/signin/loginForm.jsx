@@ -16,7 +16,7 @@ let loginForm = React.createClass({
     render(){
         const { getFieldProps } = this.props.form;
         return <div className="login-form">
-            <h2>欢迎来到税务师行业信息化系统</h2>
+            <h2>欢迎来到税务之声后台管理系统</h2>
             <h3>系统登录</h3>
             <Form onSubmit={this.handleSubmit}>
                 <FormItem>
