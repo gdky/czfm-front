@@ -1,59 +1,92 @@
 import React from 'react'
-import { Button, Icon, Alert, Col, Row, Form, notification } from 'antd'
-import Detail from 'component/msgDetail'
+import { Button, Icon, Alert, Col, Row, Form, message, Input } from 'antd'
 import config from 'common/configuration'
-import req from 'common/request'
-import Panel from 'component/compPanel'
+import req from 'reqwest'
+import Container from 'component/container'
+import FileSaver from 'file-saver'
 import { jsonCopy, isEmptyObject } from 'common/utils'
 import cloneDeep from 'lodash/cloneDeep';
 import './style.css'
 
-const c = React.createClass({
-      getDefaultProps() {
+const FormItem = Form.Item;
+const createForm = Form.create;
+const ButtonGroup = Button.Group;
+
+let c = React.createClass({
+    getDefaultProps() {
         return {
             //接收的json数据中用来充当key的字段名
             keyCol: 'id',
             //数据来源api
-            apiUrl:  config.URI_API_PROJECT+`/test`,
+            apiUrl: `pub/api/tts`,
             //初始搜索条件
             defaultWhere: {},
             //栏目名称
-            title: '文章发布'
+            title: '语音合成'
         }
     },
     getInitialState() {
         return {
-            data:''
+            loading: false
         }
     },
-    fetchData() {
+    convert() {
+        const {getFieldsValue} = this.props.form;
+        const value = getFieldsValue();
         const {apiUrl} = this.props;
-      
-        req({
-            url: apiUrl,
-            method: 'GET',
-        }).then(resp => {
-          
-			this.setState({ data: resp });
-        
-        }).catch(e => {
-            notification.error({
-                duration: 2,
-                message: '数据读取失败',
-                description: '网络访问故障，请尝试刷新页面'
-            });
-        })
+        value.text = value.text.replace(/\s+/g, "");
+        let param = JSON.stringify(value);
+        this.setState({ loading: true })
+        let xhr = new XMLHttpRequest();
+        let that = this;
+        xhr.open("POST", apiUrl, true);
+        xhr.responseType = "arraybuffer";
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onreadystatechange = function () {//Call a function when the state changes.
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                that.setState({loading:false})
+                let arrayBuffer = xhr.response;
+                let blob = new Blob([arrayBuffer], { type: "audio/mpeg3" });
+                FileSaver.saveAs(blob, 't2a.mp3')
+            }
+        }
+        xhr.send(param);
     },
-    componentDidMount() {
-            this.fetchData();
-       
+    reset() {
+        this.props.form.resetFields();
     },
+
     render() {
-        return <div className="mksz">
-        <audio
-            src={this.state.data}></audio>
+        const {getFieldProps} = this.props.form;
+        const {loading} = this.state;
+        const textProps = getFieldProps('text');
+        return <div className="yyhc">
+            <div className="wrap">
+                <Container>
+                    <Form>
+                        <Row>
+                            输入要转换的文字：
+                        </Row>
+                        <Row>
+                            <FormItem id="control-textarea">
+                                <Input {...textProps} type="textarea" id="control-textarea" rows="10" />
+                            </FormItem>
+                        </Row>
+                        <Row>
+                            <ButtonGroup>
+                                <Button loading={loading} type="primary" size="large" onClick={this.convert}>转换</Button>
+                                <Button type="default" size="large" onClick={this.reset}>清空</Button>
+                            </ButtonGroup>
+
+                        </Row>
+
+                    </Form>
+                </Container>
+            </div>
+
         </div>
     }
 
 });
+c = createForm()(c);
 module.exports = c;
