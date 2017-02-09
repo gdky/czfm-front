@@ -15,45 +15,45 @@ let c = React.createClass({
         return {
         }
     },
-    getInitialState(){
+    getInitialState() {
         return {
-            modal:false,audio:{},uploadUrl:''
+            modal: false, audio: {}, uploadUrl: ''
         }
     },
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         const data = nextProps.data
-        this.setState({uploadUrl:data.attachment,audio:{label:data.bt}})
-        
-         
+        this.setState({ uploadUrl: data.attachment, audio: { label: data.bt } })
+
+
     },
     commit() {
-        
+
         const {getFieldsValue} = this.props.form;
-        this.props.onCommit(getFieldsValue(), this.refs.editor.handleValue(),this.state.audio,this.state.uploadUrl );
-        
+        this.props.onCommit(getFieldsValue(), this.refs.editor.handleValue(), this.state.audio, this.state.uploadUrl);
+
     },
     save() {
         const {getFieldsValue} = this.props.form;
         this.props.onSave(getFieldsValue());
 
     },
-    closeReciver(){
-        this.setState({modal:false})
+    closeReciver() {
+        this.setState({ modal: false })
     },
-    openReciver(){
-        this.setState({modal:true})
+    openReciver() {
+        this.setState({ modal: true })
     },
-    getReciver(obj){
-       
-        this.setState({audio:obj});
+    getReciver(obj) {
+
+        this.setState({ audio: obj });
         this.closeReciver()
     },
-    uploadOk(uploadUrl){
-        this.setState({uploadUrl:uploadUrl})
+    uploadOk(uploadUrl) {
+        this.setState({ uploadUrl: uploadUrl })
     },
     render() {
-       
-        const {modal,audio,uploadUrl} = this.state;
+
+        const {modal, audio, uploadUrl} = this.state;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {
             labelCol: { span: 2 },
@@ -66,44 +66,44 @@ let c = React.createClass({
             ]
         });
         return <Form horizontal onSubmit={this.handleSubmit}>
-                <Row>
-                    <FormItem
-                        {...formItemLayout}
-                        label="文章标题">
-                        <Input placeholder="文章标题" {...titleProps} />
-                    </FormItem>
-                </Row>
-                <Row>
+            <Row>
+                <FormItem
+                    {...formItemLayout}
+                    label="文章标题">
+                    <Input placeholder="文章标题" {...titleProps} />
+                </FormItem>
+            </Row>
+            <Row>
                 <Audio visible={modal} onCancel={this.closeReciver} onOk={this.getReciver} />
-                    <FormItem
-                        labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}
-                        label="音频文件" required>
-                        {audio.label}
-                        <Button onClick={this.openReciver}>选择</Button>
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem
-                        labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}
-                        label="上传附件" required>
-                        {uploadUrl}
-                     <UploadFj uploadOk={this.uploadOk} />
-                    </FormItem>
-                </Row>
-                <Row>
-                    <FormItem
-                        {...formItemLayout}
-                        label="正文">
-                        <Rich  {...getFieldProps('content') } ref="editor" value={this.props.data.content} />
-                    </FormItem>
-                </Row>
-                <Row>
-                    <Col span="2" offset={22}>
-                        <Button type="primary" htmlType="submit" className="query"
-                            onClick={this.commit}>提交</Button>
-                    </Col>
-                </Row>
-            </Form>
+                <FormItem
+                    labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}
+                    label="音频文件" required>
+                    {audio.label}
+                    <Button onClick={this.openReciver}>选择</Button>
+                </FormItem>
+            </Row>
+            <Row>
+                <FormItem
+                    labelCol={{ span: 2 }} wrapperCol={{ span: 10 }}
+                    label="上传附件" required>
+                    {uploadUrl}
+                    <UploadFj uploadOk={this.uploadOk} />
+                </FormItem>
+            </Row>
+            <Row>
+                <FormItem
+                    {...formItemLayout}
+                    label="正文">
+                    <Rich  {...getFieldProps('content') } ref="editor" value={this.props.data.content} />
+                </FormItem>
+            </Row>
+            <Row>
+                <Col span="2" offset={22}>
+                    <Button type="primary" htmlType="submit" className="query"
+                        onClick={this.commit}>提交</Button>
+                </Col>
+            </Row>
+        </Form>
     }
 });
 
