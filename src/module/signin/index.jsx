@@ -69,7 +69,7 @@ const signin = withRouter(React.createClass({
                 <div className="logo">
                     <h1>
                         <Icon type="area-chart"/>
-                        广东省税务师行业管理信息化系统
+                        税务之声后台管理
                     </h1>
                 </div>
             </div>
@@ -81,7 +81,7 @@ const signin = withRouter(React.createClass({
                   type="error" showIcon/>}
             </div>
             <div className="footer">
-                <div className="copyright"><span>广东科溢 © 2016  内测版ver.0.9</span></div>
+                <div className="copyright"><span>广东科溢 © 2017  内测版ver.0.9</span></div>
             </div>
         </div>
     }
